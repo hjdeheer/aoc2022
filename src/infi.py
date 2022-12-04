@@ -29,6 +29,8 @@ def update_show(before, after, show):
         elif diffY > 0:
             x -= 1
         before = (y, x)
+    #Set final point also
+    show[before[1]][before[0]] = 'x'
 
 
 def part_one(content):

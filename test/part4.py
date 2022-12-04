@@ -7,13 +7,13 @@ class MyTestCase(unittest.TestCase):
         filename = "../resources/part4_test.txt"
         content = read_input(filename)
 
-        self.assertEqual(0, part_one(content))  # add assertion here
+        self.assertEqual(2, part_one(content))  # add assertion here
 
     def test_part2(self):
         filename = "../resources/part4_test.txt"
         content = read_input(filename)
 
-        self.assertEqual(0, part_two(content))
+        self.assertEqual(4, part_two(content))
 
 if __name__ == '__main__':
     unittest.main()
