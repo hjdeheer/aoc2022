@@ -5,15 +5,15 @@ class MyTestCase(unittest.TestCase):
 
     def test_part1(self):
         filename = "../resources/part6_test.txt"
-        content, i = read_input(filename)
+        content = read_input(filename)
 
-        self.assertEqual('CMZ', part_one(content, i))  # add assertion here
+        self.assertEqual(7, part_one(content))  # add assertion here
 
     def test_part2(self):
         filename = "../resources/part6_test.txt"
-        content, i = read_input(filename)
+        content = read_input(filename)
 
-        self.assertEqual('MCD', part_two(content, i))
+        self.assertEqual(8, part_two(content))
 
 if __name__ == '__main__':
     unittest.main()
