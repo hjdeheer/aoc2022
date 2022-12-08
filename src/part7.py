@@ -19,12 +19,6 @@ class Dir:
     childs: list[Dir]
     files: list[File]
 
-
-
-
-
-
-
 def read_input(filename: str):
     root = Dir(name='/', size=-1, parent=None, childs=[], files=[])
     curr = root
