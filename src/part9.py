@@ -31,6 +31,7 @@ def visualize_tail(visited, part):
     i = max(visited, key=lambda x: x[0])[0]
     j = max(visited, key=lambda x: x[1])[1]
 
+    #Fill show array with inverted i
     show = np.empty((i + 1, j + 1), dtype=object)
     show[show == None] = '.'
     for el in visited:
@@ -104,10 +105,10 @@ def part_one(content):
 
 def part_two(content):
     dir_map = {'R': (0, 1), 'L': (0, -1), 'U': (1, 0), 'D': (-1,0)}
-    head = (0, 0)
     visited = []
     positions = {0: (0,0), 1: (0, 0), 2: (0, 0), 3: (0, 0), 4: (0, 0), 5: (0, 0), 6: (0, 0), 7: (0, 0), 8: (0, 0), 9: (0, 0)}
-
+    #Add start
+    visited.append((0, 0))
     for d, steps in content:
         direc = dir_map[d]
         for step in range(steps):
@@ -119,11 +120,8 @@ def part_two(content):
                 head = positions[rope - 1]
                 tail = positions[rope]
                 if in_range(head, tail):
-                    if rope == 9:
-                        visited.append(tail)
                     continue
                 updated_tail = adjust(head, tail)
-                #Update pos of follower
                 positions[rope] = updated_tail
                 if rope == 9:
                     visited.append(updated_tail)
