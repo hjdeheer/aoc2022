@@ -1,8 +1,6 @@
-import collections
-import copy
-from collections import deque
-
+import operator
 import numpy as np
+
 def read_input(filename: str):
     instructions = []
     with open(filename, 'r') as file:
@@ -39,76 +37,44 @@ def visualize_tail(visited, part):
         column = el[1]
         show[row][column] = '#'
     # Save message
-    np.savetxt(f'../messages/message{part}.txt', X=show, fmt='%s')
+    np.savetxt(f'../messages/message9_{part}.txt', X=show, fmt='%s')
+
+
+def sign(x):
+    if x < 0:
+        return -1
+    elif x > 0:
+        return 1
+    return 0
 
 
 def adjust(head, tail):
-    diffX = head[0] - tail[0]
-    diffY = head[1] - tail[1]
-    tail_i = tail[0]
-    tail_j = tail[1]
-
-    # Right
-    if diffX == 0 and diffY == 2:
-        tail_j += 1
-    # Left
-    elif diffX == 0 and diffY == -2:
-        tail_j -= 1
-    # Up
-    elif diffX == 2 and diffY == 0:
-        tail_i += 1
-    # DOwn
-    elif diffX == -2 and diffY == 0:
-        tail_i -= 1
-    # Diagonal cases - right top
-    elif diffX >= 1 and diffY >= 1:
-        tail_i += 1
-        tail_j += 1
-    # Top left
-    elif diffX >= 1 and diffY <= -1:
-        tail_i += 1
-        tail_j -= 1
-    # Down left
-    elif diffX <= -1 and diffY <= -1:
-        tail_i -= 1
-        tail_j -= 1
-    # Down right
-    elif diffX <= -1 and diffY >= 1:
-        tail_i -= 1
-        tail_j += 1
-    tail = (tail_i, tail_j)
-    return tail
-
+    diff = tuple(map(operator.sub, head, tail))
+    return tail[0] + sign(diff[0]), tail[1] + sign(diff[1])
 
 def part_one(content):
     dir_map = {'R': (0, 1), 'L': (0, -1), 'U': (1, 0), 'D': (-1,0)}
     head = (0, 0)
     tail = (0, 0)
-    visited = []
-    total_v = 0
+    visited = [tail]
     for d, steps in content:
         direc = dir_map[d]
         for step in range(steps):
-            total_v += 1
             head_i = head[0] + direc[0]
             head_j = head[1] + direc[1]
             head = (head_i, head_j)
             if in_range(head, tail):
                 visited.append(tail)
                 continue
-            #One left of head
             tail = adjust(head, tail)
             visited.append(tail)
-
     visualize_tail(visited, 0)
     return len(set(visited))
 
 def part_two(content):
-    dir_map = {'R': (0, 1), 'L': (0, -1), 'U': (1, 0), 'D': (-1,0)}
-    visited = []
-    positions = {0: (0,0), 1: (0, 0), 2: (0, 0), 3: (0, 0), 4: (0, 0), 5: (0, 0), 6: (0, 0), 7: (0, 0), 8: (0, 0), 9: (0, 0)}
-    #Add start
-    visited.append((0, 0))
+    dir_map = {'R': (0, 1), 'L': (0, -1), 'U': (1, 0), 'D': (-1, 0)}
+    visited = [(0, 0)]
+    positions = [(0, 0)] * 10
     for d, steps in content:
         direc = dir_map[d]
         for step in range(steps):
@@ -116,7 +82,7 @@ def part_two(content):
             begin_i = begin[0] + direc[0]
             begin_j = begin[1] + direc[1]
             positions[0] = (begin_i, begin_j)
-            for rope in range(1, len(positions.keys())):
+            for rope in range(1, len(positions)):
                 head = positions[rope - 1]
                 tail = positions[rope]
                 if in_range(head, tail):
@@ -125,7 +91,6 @@ def part_two(content):
                 positions[rope] = updated_tail
                 if rope == 9:
                     visited.append(updated_tail)
-
     visualize_tail(visited, 1)
     return len(set(visited))
 
