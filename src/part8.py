@@ -58,6 +58,8 @@ def get_viewing_distance(grid:list[list[int]], i: int, j: int):
     return total_view
 
 
+
+
 def part_one(grid: list[list[int]]):
     n_rows = len(grid)
     n_columns = len(grid[0])
