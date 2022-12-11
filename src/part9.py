@@ -47,7 +47,6 @@ def sign(x):
         return 1
     return 0
 
-
 def adjust(head, tail):
     diff = tuple(map(operator.sub, head, tail))
     return tail[0] + sign(diff[0]), tail[1] + sign(diff[1])
@@ -64,7 +63,6 @@ def part_one(content):
             head_j = head[1] + direc[1]
             head = (head_i, head_j)
             if in_range(head, tail):
-                visited.append(tail)
                 continue
             tail = adjust(head, tail)
             visited.append(tail)
