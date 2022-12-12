@@ -25,9 +25,9 @@ class Monkey:
 def read_input(filename: str):
     monkeys = []
     with open(filename, 'r') as file:
-        r_monkeys = file.read().split('\n\n')
+        r_monkeys = file.read().strip().split('\n\n')
         for monkey in r_monkeys:
-            details = monkey.strip().split('\n  ')
+            details = monkey.split('\n')
             s_items = list(map(int, re.findall(r'\d+', details[1])))
             operation = details[2].split(' = ')[1]
             test = int(re.findall(r'\d+', details[3])[0])

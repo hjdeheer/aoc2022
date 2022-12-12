@@ -13,36 +13,29 @@ def read_input(filename: str):
             grid.append(row)
     return grid
 
-
-
 def get_height(row, column, grid):
     return grid[row][column]
-def get_neigbours(node, grid):
+
+def set_height_se(new_height):
+    if new_height == 'S':
+        new_height = 'a'
+    elif new_height == 'E':
+        new_height = 'z'
+    return new_height
+def get_neighbours(node, grid):
     dir_map = {'left': (0, -1), 'right':(0, 1), 'up': (-1, 0), 'down': (1, 0)}
     neighbours = []
     for dir in dir_map.values():
         height = get_height(*node, grid)
-        if height == 'S':
-            height = 'a'
-        elif height == 'E':
-            height = 'z'
-
+        height = set_height_se(height)
         new_pos = tuple(map(operator.add, node, dir))
         #If in bounds
         if 0 <= new_pos[0] < len(grid) and 0 <= new_pos[1] < len(grid[0]):
             new_height = get_height(*new_pos, grid)
-            if new_height == 'S':
-                new_height = 'a'
-            elif new_height == 'E':
-                new_height = 'z'
+            new_height = set_height_se(new_height)
             if ord(new_height) - ord(height) <= 1:
                 neighbours.append(new_pos)
     return neighbours
-
-
-
-
-
 
 def dijkstra(S, E, grid, part2=None):
     end = (0, 0)
@@ -61,11 +54,10 @@ def dijkstra(S, E, grid, part2=None):
 
             if grid[row][column] == E:
                 end = (row, column)
-                distances[(row, column)] = sys.maxsize
 
     while not Q.empty():
         d, row, column = Q.get()
-        neighbours = get_neigbours((row, column), grid)
+        neighbours = get_neighbours((row, column), grid)
         for neighbour in neighbours:
             curr_d = d + 1
             distances[neighbour] = min(curr_d, distances[neighbour])
@@ -87,7 +79,7 @@ def bfs(S, E, grid,part2=None):
 
     while not len(Q) == 0:
         node, d = Q.popleft()
-        neighbours = get_neigbours(node, grid)
+        neighbours = get_neighbours(node, grid)
         for n in neighbours:
             curr_d = d + 1
             if get_height(*n, grid) == E:
