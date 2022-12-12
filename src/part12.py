@@ -3,6 +3,8 @@ import sys
 from queue import PriorityQueue
 import operator
 import time
+
+
 def read_input(filename: str):
     grid = []
     with open(filename, 'r') as file:
@@ -10,8 +12,6 @@ def read_input(filename: str):
             row = [x for x in line.strip()]
             grid.append(row)
     return grid
-
-
 
 def get_neigbours(node, grid):
     dir_map = {'left': (0, -1), 'right':(0, 1), 'up': (-1, 0), 'down': (1, 0)}
@@ -106,6 +106,15 @@ def bfs(S, E, grid):
     return -1
 
 
+def get_starting_pos(grid):
+    starting_pos = []
+    #Get all starting posisions and set end
+    for row in range(len(grid)):
+        for column in range(len(grid[0])):
+            if grid[row][column] == 'S' or grid[row][column] == 'a':
+                starting_pos.append((row, column))
+    return starting_pos
+
 
 
 def part_one(grid: list[list[str]]):
@@ -115,48 +124,36 @@ def part_one(grid: list[list[str]]):
 def part_one_bfs(grid: list[list[str]]):
     return bfs('S', 'E', grid)
 
-
-
-
 def part_two(grid: list[list[str]]):
-    starting_pos = []
-    #Get all starting posisions and set end
-    for row in range(len(grid)):
-        for column in range(len(grid[0])):
-            if grid[row][column] == 'S' or grid[row][column] == 'a':
-                starting_pos.append((row, column))
-    return min([dijkstra(start, 'E', grid) for start in starting_pos])
+    return min([dijkstra(start, 'E', grid) for start in get_starting_pos(grid)])
 
 def part_two_bfs(grid: list[list[str]]):
-    starting_pos = []
-    #Get all starting posisions and set end
-    for row in range(len(grid)):
-        for column in range(len(grid[0])):
-            if grid[row][column] == 'S' or grid[row][column] == 'a':
-                starting_pos.append((row, column))
-    return min([bfs(start, 'E', grid) for start in starting_pos])
+    return min([bfs(start, 'E', grid) for start in get_starting_pos(grid)])
 
 
 if __name__ == "__main__":
     filename = "../resources/part12.txt"
     grid = read_input(filename)
-
-    #1 bfs
+    #
+    # #1 bfs
     start_time = time.time()
     score = part_one_bfs(grid)
     print(f"Part one: {score} - {(time.time() - start_time):.3f}s")
 
-    #1 dijkstra
+    # #1 dijkstra
     start_time = time.time()
     score = part_one(grid)
     print(f"Part one: {score} - {(time.time() - start_time):.3f}s")
 
+
+    #1 dijkstra
+    start_time = time.time()
+    score = part_two(grid)
+    print(f"Part two: {score} - {(time.time() - start_time):.3f}s")
+
     # 1 bfs
     start_time = time.time()
     score = part_two_bfs(grid)
-    print(f"Part one: {score} - {(time.time() - start_time):.3f}s")
+    print(f"Part two: {score} - {(time.time() - start_time):.3f}s")
 
-    # 1 dijkstra
-    start_time = time.time()
-    score = part_two(grid)
-    print(f"Part one: {score} - {(time.time() - start_time):.3f}s")
+
