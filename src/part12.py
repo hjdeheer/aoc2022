@@ -2,6 +2,7 @@ import collections
 import sys
 from queue import PriorityQueue
 import operator
+import time
 def read_input(filename: str):
     grid = []
     with open(filename, 'r') as file:
@@ -35,24 +36,29 @@ def get_neigbours(node, grid):
                 neighbours.append(new_pos)
     return neighbours
 
-
-
-def part_one(grid: list[list[str]]):
-    E = (0, 0)
+def dijkstra(S, E, grid):
+    end = (0, 0)
     visited = set()
     distances = collections.defaultdict(int)
     Q = PriorityQueue()
+
+    # Add start position
+    if type(S) == tuple:
+        S = grid[S[0]][S[1]]
+
+    if type(E) == tuple:
+        E = grid[E[0]][E[1]]
+
     for row in range(len(grid)):
         for column in range(len(grid[0])):
-
-            if grid[row][column] == 'S':
+            if grid[row][column] == S:
                 Q.put((0, row, column))
-            elif grid[row][column] == 'E':
-                E = (row, column)
+            elif grid[row][column] == E:
+                end = (row, column)
                 distances[(row, column)] = sys.maxsize
             else:
                 distances[(row, column)] = sys.maxsize
-    #print(distances)
+
     while not Q.empty():
         node = Q.get()
         neighbours = get_neigbours((node[1], node[2]), grid)
@@ -65,57 +71,92 @@ def part_one(grid: list[list[str]]):
             if neighbour not in visited and not q_instance in Q.queue:
                 Q.put((distances[neighbour], neighbour[0], neighbour[1]))
         visited.add((node[1], node[2]))
-    #print(distances)
-    return distances[E]
+    return distances[end]
+
+def bfs(S, E, grid):
+    visited = set()
+    Q = collections.deque()
 
 
-def part_two(grid: list[list[int]]):
+    #Add start position
+    if type(S) == tuple:
+        S = grid[S[0]][S[1]]
 
+    if type(E) == tuple:
+        E = grid[E[0]][E[1]]
+
+
+    for row in range(len(grid)):
+        for column in range(len(grid[0])):
+            if grid[row][column] == S:
+                Q.append(((row, column), 0))
+
+    while not len(Q) == 0:
+        node, d = Q.popleft()
+        neighbours = get_neigbours(node, grid)
+        for n in neighbours:
+            curr_d = d + 1
+            if grid[n[0]][n[1]] == E:
+                return curr_d
+            #Check for duplicates
+            q_instance = (n, curr_d)
+            if n not in visited and q_instance not in Q:
+                Q.append((n, curr_d))
+        visited.add(node)
+    return -1
+
+
+
+
+def part_one(grid: list[list[str]]):
+    return dijkstra('S', 'E', grid)
+
+
+def part_one_bfs(grid: list[list[str]]):
+    return bfs('S', 'E', grid)
+
+
+
+
+def part_two(grid: list[list[str]]):
     starting_pos = []
-    global_dist = []
-    E = (0, 0)
-
     #Get all starting posisions and set end
     for row in range(len(grid)):
         for column in range(len(grid[0])):
             if grid[row][column] == 'S' or grid[row][column] == 'a':
                 starting_pos.append((row, column))
-            elif grid[row][column] == 'E':
-                E = (row, column)
+    return min([dijkstra(start, 'E', grid) for start in starting_pos])
 
-
-    for s in starting_pos:
-        visited = set()
-        distances = collections.defaultdict(int)
-        #First item in queue
-        Q = PriorityQueue()
-        Q.put((0, *s))
-        for row in range(len(grid)):
-            for column in range(len(grid[0])):
-                if (row, column) != s:
-                    distances[(row, column)] = sys.maxsize
-
-        while not Q.empty():
-            node = Q.get()
-            neighbours = get_neigbours((node[1], node[2]), grid)
-            for neighbour in neighbours:
-                curr_d = distances[(node[1], node[2])] + 1
-                if curr_d < distances[neighbour]:
-                    distances[neighbour] = curr_d
-                q_instance = (distances[neighbour], neighbour[0], neighbour[1])
-                #Check for duplicates and visited
-                if neighbour not in visited and not q_instance in Q.queue:
-                    Q.put((distances[neighbour], neighbour[0], neighbour[1]))
-            visited.add((node[1], node[2]))
-        global_dist.append(distances[E])
-
-    return min(global_dist)
+def part_two_bfs(grid: list[list[str]]):
+    starting_pos = []
+    #Get all starting posisions and set end
+    for row in range(len(grid)):
+        for column in range(len(grid[0])):
+            if grid[row][column] == 'S' or grid[row][column] == 'a':
+                starting_pos.append((row, column))
+    return min([bfs(start, 'E', grid) for start in starting_pos])
 
 
 if __name__ == "__main__":
     filename = "../resources/part12.txt"
     grid = read_input(filename)
+
+    #1 bfs
+    start_time = time.time()
+    score = part_one_bfs(grid)
+    print(f"Part one: {score} - {(time.time() - start_time):.3f}s")
+
+    #1 dijkstra
+    start_time = time.time()
     score = part_one(grid)
-    score2 = part_two(grid)
-    print(f"Part one: {score}")
-    print(f"Part two: {score2}")
+    print(f"Part one: {score} - {(time.time() - start_time):.3f}s")
+
+    # 1 bfs
+    start_time = time.time()
+    score = part_two_bfs(grid)
+    print(f"Part one: {score} - {(time.time() - start_time):.3f}s")
+
+    # 1 dijkstra
+    start_time = time.time()
+    score = part_two(grid)
+    print(f"Part one: {score} - {(time.time() - start_time):.3f}s")
