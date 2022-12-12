@@ -99,17 +99,6 @@ def bfs(S, E, grid,part2=None):
     return -1
 
 
-def get_starting_pos(grid):
-    starting_pos = []
-    #Get all starting posisions and set end
-    for row in range(len(grid)):
-        for column in range(len(grid[0])):
-            if grid[row][column] == 'S' or grid[row][column] == 'a':
-                starting_pos.append((row, column))
-    return starting_pos
-
-
-
 def part_one(grid: list[list[str]]):
     return dijkstra('S', 'E', grid)
 
