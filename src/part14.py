@@ -80,13 +80,11 @@ def falling_sand(grid):
 
 
 def part_one(paths: list[list[tuple]], max_r, max_c):
-    print(max_r, max_c)
     cave = np.empty(shape=(max_r + 1, max_c + 1), dtype=str)
     cave[cave == ''] = '.'
 
     for path in paths:
         fill_grid(cave, path)
-    print(cave)
 
     sand = 0
     in_abyss = False
